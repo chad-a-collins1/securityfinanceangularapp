@@ -42,6 +42,38 @@ export class LoginComponent {
     private router: Router
   ) {}
 
+
+  submit() {
+      if (this.form.invalid || this.loading) return;
+
+      const email = this.form.value.email!;
+      this.loading = true;
+      console.log('Calling login API for', email);
+
+      this.api.login(email).subscribe({
+        next: ({ token, customer }) => {
+
+          localStorage.setItem('jwt', token);
+          this.session.customer = customer;
+
+          console.log('Customer logged in:', customer);
+          this.router.navigate(['/orders']);
+        },
+        error: err => {
+          console.error('API error:', err);
+
+          if (err.status === 404) {
+            this.router.navigate(['/signup'], { state: { email } });
+          } else {
+            alert(`Unexpected error (${err.status}): ${err.message}`);
+          }
+        }
+      }).add(() => (this.loading = false));
+
+
+  }
+
+  /*
   submit() {
     console.log("submitting...");
 
@@ -73,4 +105,7 @@ export class LoginComponent {
       }
     }).add(() => (this.loading = false));
   }
+*/
+
+
 }

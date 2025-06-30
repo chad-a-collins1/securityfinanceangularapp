@@ -1,1 +1,49 @@
-<p>order works!</p>
+<div class="max-w-2xl mx-auto p-6 bg-white rounded-xl shadow-md">
+      <h2 class="text-2xl font-bold mb-6 text-center">🛒 Place Your Order</h2>
+
+      <ng-container *ngIf="!items().length; else list">
+        <p class="text-gray-500 text-center">Loading items...</p>
+      </ng-container>
+
+      <ng-template #list>
+        <div class="text-lg font-semibold mb-4 text-right">
+          Total: <span class="text-green-600">{{ total() | currency }}</span>
+        </div>
+
+        <form (ngSubmit)="submit()" class="space-y-4">
+          <div *ngFor="let item of items(); let i = index" class="flex items-center justify-between p-4 border rounded-lg hover:shadow-md transition">
+            <div class="flex items-center gap-3">
+              <input type="checkbox"
+                     class="accent-blue-600 w-5 h-5"
+                     [checked]="getSelection(i).selected"
+                     (change)="onCheckboxChange($event, i)"
+                     name="sel{{i}}" />
+              <div>
+
+                <div class="font-medium">{{ item.name }}</div>
+                <div class="text-sm text-gray-500">{{ item.price | currency }}</div>
+              </div>
+            </div>
+
+            <input type="number"
+                   class="w-20 text-right border rounded px-2 py-1 focus:outline-none focus:ring focus:border-blue-500"
+                   min="1"
+                   [value]="getSelection(i).qty"
+                   (input)="onQtyChange($event, i)"
+                   name="qty{{i}}"
+                   [disabled]="!getSelection(i).selected" />
+          </div>
+          <p>&nbsp;</p>
+          <button type="submit"
+                  class="w-full py-2 px-4 bg-blue-600 text-white rounded-md font-semibold hover:bg-blue-700 disabled:opacity-50"
+                  [disabled]="!hasSelection()">
+            Submit Order
+          </button>
+          <button type="button"
+                class="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400 transition ml-2"
+                (click)="backToOrders()">
+                  Back to Orders
+                </button>
+        </form>
+      </ng-template>
+    </div>

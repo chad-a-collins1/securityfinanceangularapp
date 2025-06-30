@@ -1,1 +1,57 @@
-<p>order-list works!</p>
+      <h2 class="text-xl mb-4">Hi {{customerFirstName}}, here are your orders</h2>
+
+      <ng-container *ngIf="orders">
+        <div *ngIf="orders.length === 0">No orders yet.</div>
+
+  <!--  <pre>{{ orders | json }}</pre>   -->
+
+      <div class="text-right mb-4">
+        <input type="text" [(ngModel)]="searchText" placeholder="Search orders..." class="search-input" />
+        <button
+          class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+          (click)="goToNewOrder()">
+          ➕ New Order
+        </button>
+      </div>
+
+      
+
+            <ul *ngIf="orders.length > 0">
+            <li *ngFor="let order of orders | orderFilter:searchText" class="mb-4">
+
+            <div class="font-semibold">Order #{{ order.id }} – {{ order.orderItems?.length }} item(s)
+
+                    <span *ngIf="orderTotals[order.id] !== undefined" class="ml-2 text-green-600">
+                      Subtotal: {{ orderTotals[order.id] | currency }}
+                    </span>
+
+                    <button mat-icon-button color="warn" aria-label="Delete order" (click)="confirmDelete(order)">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+
+                    <button mat-icon-button color="primary" aria-label="Edit order" (click)="openEdit(order)">
+                        <mat-icon>edit</mat-icon>
+                    </button>
+
+            </div>
+            
+                <ng-container *ngIf="order.orderItems">
+                    <ul class="ml-4 mt-2 list-disc">
+                    <li *ngFor="let item of order.orderItems">
+                    Item: {{ item.itemId }} - {{ item.name}}.  Quantity: {{ item.quantity }}
+                    </li>
+                    </ul>
+                </ng-container>
+        
+            </li>
+            </ul>
+
+        <div class="text-right text-lg font-bold mt-6">
+          Grand Total: <span class="text-blue-700">{{ grandTotal | currency }}</span>
+        </div>
+
+      </ng-container>
+
+      <div *ngIf="!orders">
+        <p>Loading...</p>
+      </div>

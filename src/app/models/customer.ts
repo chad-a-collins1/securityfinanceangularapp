@@ -4,3 +4,12 @@ export interface Customer {
   firstName: string;
   lastName: string;
 }
+
+export interface LoginRequest {
+  email: string;
+}
+
+export interface LoginResponse {
+  token: string;                 
+  customer: Customer;    
+}
